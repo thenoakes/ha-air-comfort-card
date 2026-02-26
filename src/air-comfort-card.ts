@@ -169,19 +169,32 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
     this.charts.clear();
   }
 
-  private getWorstAqSensorDef(): { history: ChartDataPoint[]; color: string } | null {
+  private getWorstAqSensorDef(): {
+    history: ChartDataPoint[];
+    color: string;
+    label: string;
+    unit: string;
+    currentValue: number;
+    warningThreshold: number;
+  } | null {
     if (!this.config || !this.hass) return null;
 
+    const tr = getTranslations(this.hass.language);
+
+    const entityUnit = (entityId: string | undefined, fallback: string): string =>
+      (entityId && this.hass?.states[entityId]?.attributes.unit_of_measurement) || fallback;
+
     const defs = [
-      { entity: this.config.co2_entity,  history: this.co2History,  thresholds: AQ_THRESHOLDS.co2,  color: '#a9e34b' },
-      { entity: this.config.no2_entity,  history: this.no2History,  thresholds: AQ_THRESHOLDS.no2,  color: '#ffa94d' },
-      { entity: this.config.pm25_entity, history: this.pm25History, thresholds: AQ_THRESHOLDS.pm25, color: '#da77f2' },
-      { entity: this.config.pm10_entity, history: this.pm10History, thresholds: AQ_THRESHOLDS.pm10, color: '#74c0fc' },
-      { entity: this.config.voc_entity,  history: this.vocHistory,  thresholds: AQ_THRESHOLDS.voc,  color: '#20c997' },
+      { entity: this.config.co2_entity,  history: this.co2History,  thresholds: AQ_THRESHOLDS.co2,  color: '#a9e34b', label: tr.sensors.co2,  unit: entityUnit(this.config.co2_entity,  'ppm')    },
+      { entity: this.config.no2_entity,  history: this.no2History,  thresholds: AQ_THRESHOLDS.no2,  color: '#ffa94d', label: tr.sensors.no2,  unit: entityUnit(this.config.no2_entity,  '')       },
+      { entity: this.config.pm25_entity, history: this.pm25History, thresholds: AQ_THRESHOLDS.pm25, color: '#da77f2', label: tr.sensors.pm25, unit: entityUnit(this.config.pm25_entity, 'µg/m³')  },
+      { entity: this.config.pm10_entity, history: this.pm10History, thresholds: AQ_THRESHOLDS.pm10, color: '#74c0fc', label: tr.sensors.pm10, unit: entityUnit(this.config.pm10_entity, 'µg/m³')  },
+      { entity: this.config.voc_entity,  history: this.vocHistory,  thresholds: AQ_THRESHOLDS.voc,  color: '#20c997', label: tr.sensors.voc,  unit: entityUnit(this.config.voc_entity,  '')       },
     ];
 
     let worstRank = 0;
     let worstDef: typeof defs[0] | null = null;
+    let worstValue = 0;
 
     for (const def of defs) {
       if (!def.entity) continue;
@@ -194,10 +207,20 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       if (rank > worstRank) {
         worstRank = rank;
         worstDef = def;
+        worstValue = value;
       }
     }
 
-    return worstRank > 0 ? worstDef : null;
+    if (worstRank === 0 || !worstDef) return null;
+
+    return {
+      history: worstDef.history,
+      color: worstDef.color,
+      label: worstDef.label,
+      unit: worstDef.unit,
+      currentValue: worstValue,
+      warningThreshold: worstDef.thresholds.warning,
+    };
   }
 
   private updateAlertChart(): void {
@@ -231,19 +254,62 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
 
     const datasetPoints: ScatterDataPoint[] = lastHourData.map(p => ({ x: p.time.getTime(), y: p.value }));
 
+    const { color, currentValue, warningThreshold, unit } = worstDef;
+
+    // Inline Chart.js plugin: draws a dashed warning threshold line and
+    // overlays the current reading value in the top-right corner.
+    const overlayPlugin = {
+      id: 'alertSparklineOverlay',
+      afterDatasetsDraw(chart: Chart) {
+        const { ctx, chartArea, scales } = chart;
+        if (!chartArea || !scales.y) return;
+        const yScale = scales.y;
+        const yMin = yScale.min as number;
+        const yMax = yScale.max as number;
+
+        ctx.save();
+
+        // Dashed threshold line
+        if (warningThreshold >= yMin && warningThreshold <= yMax) {
+          const y = yScale.getPixelForValue(warningThreshold);
+          ctx.setLineDash([3, 3]);
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = 'rgba(255, 180, 50, 0.7)';
+          ctx.beginPath();
+          ctx.moveTo(chartArea.left, y);
+          ctx.lineTo(chartArea.right, y);
+          ctx.stroke();
+        }
+
+        // Current reading value — top-right corner of the chart area
+        const valueText = Number.isInteger(currentValue)
+          ? `${currentValue}${unit}`
+          : `${currentValue.toFixed(1)}${unit}`;
+        ctx.setLineDash([]);
+        ctx.font = 'bold 9px sans-serif';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = color;
+        ctx.fillText(valueText, chartArea.right - 2, chartArea.top + 2);
+
+        ctx.restore();
+      },
+    };
+
     const sparklineConfig: ChartConfiguration = {
       type: 'line',
       data: {
         datasets: [{
           data: datasetPoints,
-          borderColor: worstDef.color,
-          backgroundColor: worstDef.color + '33',
+          borderColor: color,
+          backgroundColor: color + '33',
           fill: true,
           tension: 0.4,
           pointRadius: 0,
           borderWidth: 1.5,
         }],
       },
+      plugins: [overlayPlugin],
       options: {
         responsive: false,
         maintainAspectRatio: false,
@@ -260,11 +326,10 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
     };
 
     if (this.alertChart) {
-      this.alertChart.data = sparklineConfig.data;
-      this.alertChart.update('none');
-    } else {
-      this.alertChart = new Chart(canvas, sparklineConfig);
+      this.alertChart.destroy();
+      this.alertChart = undefined;
     }
+    this.alertChart = new Chart(canvas, sparklineConfig);
   }
 
   private async fetchHistory(): Promise<void> {
@@ -759,6 +824,7 @@ private getSensorDefs() {
     const showWarning = !isInComfortZone;
     const aqStatus = this.calculateAirQuality();
     const { label: statusLabel, severity } = dominantStatus(statusText, aqStatus, t);
+    const worstAq = aqStatus && aqStatus.level !== 'good' ? this.getWorstAqSensorDef() : null;
 
     return html`
       <div class="card-content">
@@ -769,9 +835,17 @@ private getSensorDefs() {
               <span class="severity-dot severity-${severity}"></span>
               ${statusLabel}
             </div>
-            ${aqStatus && aqStatus.level !== 'good' ? html`
+            ${worstAq ? html`
               <div class="alert-sparkline">
-                <canvas id="alert-chart" width="80" height="36"></canvas>
+                <div class="alert-sparkline-label">
+                  <span class="alert-sparkline-name">${worstAq.label}</span>
+                  <span class="alert-sparkline-value" style="color: ${worstAq.color}">
+                    ${Number.isInteger(worstAq.currentValue)
+                      ? worstAq.currentValue
+                      : worstAq.currentValue.toFixed(1)}${worstAq.unit}
+                  </span>
+                </div>
+                <canvas id="alert-chart" width="96" height="36"></canvas>
               </div>
             ` : ''}
           </div>
