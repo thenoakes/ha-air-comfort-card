@@ -208,6 +208,38 @@ bun run watch
 
 The compiled file will be in the `dist` folder.
 
+## Theming
+
+The card integrates with Home Assistant's theme system. Most colors are inherited automatically from the active HA theme.
+
+### CSS Variables
+
+You can override specific card colors using CSS custom properties, either in your `themes.yaml` or via [card-mod](https://github.com/thomasloven/lovelace-card-mod).
+
+| Variable | Fallback | Description |
+|----------|----------|-------------|
+| `--air-comfort-zone-color` | `--success-color` | Color of the comfort zone circle |
+
+**Example — change the comfort zone circle to orange using card-mod:**
+
+```yaml
+type: custom:air-comfort-card
+temperature_sensor: sensor.indoor_temperature
+humidity_sensor: sensor.indoor_humidity
+card_mod:
+  style: |
+    ha-card {
+      --air-comfort-zone-color: #FF8C00;
+    }
+```
+
+**Example — apply via a custom HA theme (`themes.yaml`):**
+
+```yaml
+my_custom_theme:
+  air-comfort-zone-color: "#FF8C00"
+```
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.

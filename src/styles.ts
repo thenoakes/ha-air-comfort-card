@@ -164,8 +164,8 @@ export const cardStyles = css`
     width: 40%;
     height: 40%;
     border-radius: 50%;
-    background: color-mix(in srgb, var(--success-color, #40c057) 15%, transparent);
-    border: 2px solid color-mix(in srgb, var(--success-color, #40c057) 40%, transparent);
+    background: color-mix(in srgb, var(--air-comfort-zone-color, var(--success-color, #40c057)) 15%, transparent);
+    border: 2px solid color-mix(in srgb, var(--air-comfort-zone-color, var(--success-color, #40c057)) 40%, transparent);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
