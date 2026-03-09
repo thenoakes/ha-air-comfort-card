@@ -127,9 +127,9 @@ export const cardStyles = css`
     flex-shrink: 0;
   }
 
-  .severity-0 { background: #40c057; }
-  .severity-1 { background: #fd7e14; }
-  .severity-2 { background: #fa5252; }
+  .severity-0 { background: var(--success-color, #40c057); }
+  .severity-1 { background: var(--warning-color, #fd7e14); }
+  .severity-2 { background: var(--error-color, #fa5252); }
 
   .comfort-dial-container {
     position: relative;
@@ -153,7 +153,7 @@ export const cardStyles = css`
     width: 70%;
     height: 70%;
     border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid var(--divider-color, rgba(255, 255, 255, 0.2));
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -164,8 +164,8 @@ export const cardStyles = css`
     width: 40%;
     height: 40%;
     border-radius: 50%;
-    background: rgba(100, 200, 100, 0.15);
-    border: 2px solid rgba(100, 200, 100, 0.4);
+    background: color-mix(in srgb, var(--air-comfort-zone-color, var(--success-color, #40c057)) 15%, transparent);
+    border: 2px solid color-mix(in srgb, var(--air-comfort-zone-color, var(--success-color, #40c057)) 40%, transparent);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -177,7 +177,7 @@ export const cardStyles = css`
     width: clamp(16px, calc(var(--dial-size, 300px) * 0.08), 24px);
     height: clamp(16px, calc(var(--dial-size, 300px) * 0.08), 24px);
     border-radius: 50%;
-    background: #ffffff;
+    background: var(--primary-text-color, #ffffff);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
     top: 50%;
     left: 50%;
@@ -308,7 +308,7 @@ export const cardStyles = css`
     justify-content: space-between;
     gap: 12px;
     padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--divider-color, rgba(255, 255, 255, 0.1));
     font-size: 0.9em;
     color: var(--primary-text-color, #ffffff);
     cursor: pointer;
