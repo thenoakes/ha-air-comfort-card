@@ -13,7 +13,7 @@ A custom Home Assistant card that visualizes indoor air comfort using temperatur
 - 📍 **Moving Indicator**: Dynamic dot that shows current conditions on the dial
 - 🌡️ **Temperature & Humidity Display**: Clear readings with customizable units
 - 🟢 **Air Quality Status**: Overall air quality message (Good / Moderate / Poor) derived from all configured air quality sensors, based on WHO 2021 and ASHRAE guidelines
-- 📊 **24-Hour History Charts**: Line graphs for temperature, humidity, CO2, NO2, PM 2.5, PM 10, and VOC
+- 📊 **24-Hour History Charts**: Line graphs for temperature, humidity, CO2, NO2, PM 1, PM 2.5, PM 10, Radon, and VOC
 - 🌍 **Multi-Language Support**: UI adapts to your Home Assistant language setting (English and German included; easily extensible)
 - 🎨 **Theme-Aware**: Automatically adapts to your Home Assistant theme
 - ⚙️ **Configurable**: Customize visibility of different elements via YAML
@@ -79,8 +79,10 @@ temperature_entity: sensor.living_room_temperature
 humidity_entity: sensor.living_room_humidity
 co2_entity: sensor.living_room_co2
 no2_entity: sensor.living_room_no2
+pm1_entity: sensor.living_room_pm1
 pm25_entity: sensor.living_room_pm25
 pm10_entity: sensor.living_room_pm10
+radon_entity: sensor.living_room_radon
 voc_entity: sensor.living_room_voc
 name: Living Room Comfort
 temperature_unit: C
@@ -101,8 +103,10 @@ humidity_max: 60
 | `humidity_entity` | string | **Yes** | - | Entity ID of your humidity sensor |
 | `co2_entity` | string | No | - | Entity ID of your CO2 sensor |
 | `no2_entity` | string | No | - | Entity ID of your NO2 (Nitrogen Dioxide) sensor |
+| `pm1_entity` | string | No | - | Entity ID of your PM 1 sensor |
 | `pm25_entity` | string | No | - | Entity ID of your PM 2.5 sensor |
 | `pm10_entity` | string | No | - | Entity ID of your PM 10 sensor |
+| `radon_entity` | string | No | - | Entity ID of your Radon sensor |
 | `voc_entity` | string | No | - | Entity ID of your VOC (Volatile Organic Compounds) sensor |
 | `name` | string | No | `Air Comfort` | Custom title for the card (editable via visual editor) |
 | `temperature_unit` | string | No | `C` | Temperature display unit: `C` for Celsius or `F` for Fahrenheit |
@@ -130,7 +134,7 @@ The moving dot indicator shows your current conditions relative to these zones, 
 
 ### Air Quality Status
 
-When one or more air quality sensors are configured (CO2, NO2, PM 2.5, PM 10, VOC), the card displays an overall **Air quality** message below the temperature and humidity readings.
+When one or more air quality sensors are configured (CO2, NO2, PM 1, PM 2.5, PM 10, Radon, VOC), the card displays an overall **Air quality** message below the temperature and humidity readings.
 
 The status reflects the worst sensor reading across all configured sensors:
 
@@ -146,8 +150,10 @@ Thresholds are based on **WHO 2021 air quality guidelines** and **ASHRAE 62.1** 
 |--------|------|----------|------|
 | CO2 | ≤ 800 ppm | ≤ 1200 ppm | > 1200 ppm |
 | NO2 | ≤ 50 µg/m³ | ≤ 150 µg/m³ | > 150 µg/m³ |
+| PM 1 | ≤ 10 µg/m³ | ≤ 25 µg/m³ | > 25 µg/m³ |
 | PM 2.5 | ≤ 15 µg/m³ | ≤ 35 µg/m³ | > 35 µg/m³ |
 | PM 10 | ≤ 45 µg/m³ | ≤ 100 µg/m³ | > 100 µg/m³ |
+| Radon | ≤ 100 Bq/m³ | ≤ 150 Bq/m³ | > 150 Bq/m³ |
 | VOC | ≤ 150 | ≤ 250 | > 250 |
 
 ## Translations

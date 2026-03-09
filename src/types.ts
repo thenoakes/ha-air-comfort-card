@@ -37,8 +37,10 @@ export interface CardConfig {
   humidity_min?: number;
   humidity_max?: number;
   no2_entity?: string;
+  pm1_entity?: string;
   pm25_entity?: string;
   pm10_entity?: string;
+  radon_entity?: string;
   voc_entity?: string;
 }
 

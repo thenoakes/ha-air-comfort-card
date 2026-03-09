@@ -50,8 +50,10 @@ export const en = {
     humidity:    "Humidity",
     co2:         "CO₂",
     no2:         "NO₂",
+    pm1:         "PM 1",
     pm25:        "PM 2.5",
     pm10:        "PM 10",
+    radon:       "Radon",
     voc:         "VOC",
   },
   editor: {
@@ -68,8 +70,10 @@ export const en = {
     airQualitySection:    "Air Quality",
     co2Entity:            "CO₂ Entity",
     no2Entity:            "NO₂ Entity",
+    pm1Entity:            "PM 1 Entity",
     pm25Entity:           "PM 2.5 Entity",
     pm10Entity:           "PM 10 Entity",
+    radonEntity:          "Radon Entity",
     vocEntity:            "VOC Entity",
   },
 };
