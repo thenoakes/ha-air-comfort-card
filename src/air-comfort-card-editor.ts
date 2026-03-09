@@ -4,9 +4,9 @@ import { CardConfig, HomeAssistant, stripDeprecatedKeys } from "./types";
 import { editorStyles } from "./styles";
 import { getTranslations } from "./translations";
 
-type EntityField = "temperature_entity" | "humidity_entity" | "co2_entity" | "no2_entity" | "pm25_entity" | "pm10_entity" | "voc_entity";
+type EntityField = "temperature_entity" | "humidity_entity" | "co2_entity" | "no2_entity" | "pm1_entity" | "pm25_entity" | "pm10_entity" | "radon_entity" | "voc_entity";
 
-const ENTITY_FIELDS = new Set<string>(["temperature_entity", "humidity_entity", "co2_entity", "no2_entity", "pm25_entity", "pm10_entity", "voc_entity"]);
+const ENTITY_FIELDS = new Set<string>(["temperature_entity", "humidity_entity", "co2_entity", "no2_entity", "pm1_entity", "pm25_entity", "pm10_entity", "radon_entity", "voc_entity"]);
 
 // Home Assistant lazy-loads ha-entity-picker — it is NOT registered when the
 // editor first renders. We force-load it by creating a temporary "entities"
@@ -99,8 +99,10 @@ export class AirComfortCardEditor extends LitElement {
           <div class="section-title">${t.editor.airQualitySection}</div>
           ${this._renderEntityField("co2_entity", t.editor.co2Entity, "carbon_dioxide", false)}
           ${this._renderEntityField("no2_entity", t.editor.no2Entity, "nitrogen_dioxide", false)}
+          ${this._renderEntityField("pm1_entity", t.editor.pm1Entity, "pm1", false)}
           ${this._renderEntityField("pm25_entity", t.editor.pm25Entity, "pm25", false)}
           ${this._renderEntityField("pm10_entity", t.editor.pm10Entity, "pm10", false)}
+          ${this._renderEntityField("radon_entity", t.editor.radonEntity, "radon", false)}
           ${this._renderEntityField("voc_entity", t.editor.vocEntity, "volatile_organic_compounds", false)}
         </div>
       </div>

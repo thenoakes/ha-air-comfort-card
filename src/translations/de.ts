@@ -52,8 +52,10 @@ export const de: Translations = {
     humidity:    "Luftfeuchtigkeit",
     co2:         "CO₂",
     no2:         "NO₂",
+    pm1:         "PM 1",
     pm25:        "PM 2,5",
     pm10:        "PM 10",
+    radon:       "Radon",
     voc:         "VOC",
   },
   editor: {
@@ -70,8 +72,10 @@ export const de: Translations = {
     airQualitySection:    "Luftqualität",
     co2Entity:            "CO₂-Entität",
     no2Entity:            "NO₂-Entität",
+    pm1Entity:            "PM 1-Entität",
     pm25Entity:           "PM 2,5-Entität",
     pm10Entity:           "PM 10-Entität",
+    radonEntity:          "Radon-Entität",
     vocEntity:            "VOC-Entität",
   },
 };

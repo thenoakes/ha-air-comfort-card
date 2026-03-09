@@ -162,12 +162,20 @@
           <input type="range" id="no2" min="0" max="500" value="30" step="1">
         </div>
         <div class="control">
+          <label>PM 1: <strong id="pm1-value">5</strong> µg/m³</label>
+          <input type="range" id="pm1" min="0" max="100" value="5" step="0.1">
+        </div>
+        <div class="control">
           <label>PM 2.5: <strong id="pm25-value">10</strong> µg/m³</label>
           <input type="range" id="pm25" min="0" max="200" value="10" step="0.1">
         </div>
         <div class="control">
           <label>PM 10: <strong id="pm10-value">20</strong> µg/m³</label>
           <input type="range" id="pm10" min="0" max="300" value="20" step="0.1">
+        </div>
+        <div class="control">
+          <label>Radon: <strong id="radon-value">50</strong> Bq/m³</label>
+          <input type="range" id="radon" min="0" max="500" value="50" step="1">
         </div>
         <div class="control">
           <label>VOC: <strong id="voc-value">100</strong></label>
@@ -196,15 +204,19 @@
     const humiditySlider = document.getElementById('humidity');
     const co2Slider = document.getElementById('co2');
     const no2Slider = document.getElementById('no2');
+    const pm1Slider = document.getElementById('pm1');
     const pm25Slider = document.getElementById('pm25');
     const pm10Slider = document.getElementById('pm10');
+    const radonSlider = document.getElementById('radon');
     const vocSlider = document.getElementById('voc');
     const tempValue = document.getElementById('temp-value');
     const humidityValue = document.getElementById('humidity-value');
     const co2Value = document.getElementById('co2-value');
     const no2Value = document.getElementById('no2-value');
+    const pm1Value = document.getElementById('pm1-value');
     const pm25Value = document.getElementById('pm25-value');
     const pm10Value = document.getElementById('pm10-value');
+    const radonValue = document.getElementById('radon-value');
     const vocValue = document.getElementById('voc-value');
 
     let sensorTempUnit = '°C';
@@ -217,8 +229,10 @@
     let humidityEntityId = 'sensor.humidity';
     let co2EntityId = 'sensor.co2';
     let no2EntityId = 'sensor.no2';
+    let pm1EntityId = 'sensor.pm1';
     let pm25EntityId = 'sensor.pm25';
     let pm10EntityId = 'sensor.pm10';
+    let radonEntityId = 'sensor.radon';
     let vocEntityId = 'sensor.voc';
 
     let config = {
@@ -227,8 +241,10 @@
       humidity_entity: humidityEntityId,
       co2_entity: co2EntityId,
       no2_entity: no2EntityId,
+      pm1_entity: pm1EntityId,
       pm25_entity: pm25EntityId,
       pm10_entity: pm10EntityId,
+      radon_entity: radonEntityId,
       voc_entity: vocEntityId,
       temp_c_min: 20,
       temp_c_max: 24,
@@ -238,7 +254,7 @@
       humidity_max: 60,
     };
 
-    function createHass(temperature, humidity, co2, no2, pm25, pm10, voc) {
+    function createHass(temperature, humidity, co2, no2, pm1, pm25, pm10, radon, voc) {
       return {
         states: {
           [temperatureEntityId]: {
@@ -257,6 +273,10 @@
             state: String(no2),
             attributes: { unit_of_measurement: '' }
           },
+          [pm1EntityId]: {
+            state: String(pm1),
+            attributes: { unit_of_measurement: 'µg/m³' }
+          },
           [pm25EntityId]: {
             state: String(pm25),
             attributes: { unit_of_measurement: 'µg/m³' }
@@ -264,6 +284,10 @@
           [pm10EntityId]: {
             state: String(pm10),
             attributes: { unit_of_measurement: 'µg/m³' }
+          },
+          [radonEntityId]: {
+            state: String(radon),
+            attributes: { unit_of_measurement: 'Bq/m³' }
           },
           [vocEntityId]: {
             state: String(voc),
@@ -280,17 +304,21 @@
       const humidity = parseFloat(humiditySlider.value);
       const co2 = parseFloat(co2Slider.value);
       const no2 = parseFloat(no2Slider.value);
+      const pm1 = parseFloat(pm1Slider.value);
       const pm25 = parseFloat(pm25Slider.value);
       const pm10 = parseFloat(pm10Slider.value);
+      const radon = parseFloat(radonSlider.value);
       const voc = parseFloat(vocSlider.value);
       tempValue.textContent = temp.toFixed(1);
       humidityValue.textContent = humidity.toFixed(1);
       co2Value.textContent = co2.toFixed(0);
       no2Value.textContent = no2.toFixed(0);
+      pm1Value.textContent = pm1.toFixed(1);
       pm25Value.textContent = pm25.toFixed(1);
       pm10Value.textContent = pm10.toFixed(1);
+      radonValue.textContent = radon.toFixed(0);
       vocValue.textContent = voc.toFixed(0);
-      const hass = createHass(temp, humidity, co2, no2, pm25, pm10, voc);
+      const hass = createHass(temp, humidity, co2, no2, pm1, pm25, pm10, radon, voc);
       cards.forEach(element => {
         if (element) {
           element.hass = hass;
@@ -307,8 +335,10 @@
       if (config.humidity_entity) humidityEntityId = config.humidity_entity;
       if (config.co2_entity) co2EntityId = config.co2_entity;
       if (config.no2_entity) no2EntityId = config.no2_entity;
+      if (config.pm1_entity) pm1EntityId = config.pm1_entity;
       if (config.pm25_entity) pm25EntityId = config.pm25_entity;
       if (config.pm10_entity) pm10EntityId = config.pm10_entity;
+      if (config.radon_entity) radonEntityId = config.radon_entity;
       if (config.voc_entity) vocEntityId = config.voc_entity;
 
       cards.forEach(element => {
@@ -350,8 +380,10 @@
     humiditySlider.addEventListener('input', update);
     co2Slider.addEventListener('input', update);
     no2Slider.addEventListener('input', update);
+    pm1Slider.addEventListener('input', update);
     pm25Slider.addEventListener('input', update);
     pm10Slider.addEventListener('input', update);
+    radonSlider.addEventListener('input', update);
     vocSlider.addEventListener('input', update);
 
     function getLatestHistoryValue(series) {
@@ -399,7 +431,7 @@
           throw new Error('Mock history should be an array of entity histories');
         }
         latestHistoryResponse = data;
-        const [temperatureHistory = [], humidityHistory = [], co2History = [], no2History = [], pm25History = [], pm10History = [], vocHistory = []] = data;
+        const [temperatureHistory = [], humidityHistory = [], co2History = [], no2History = [], pm1History = [], pm25History = [], pm10History = [], radonHistory = [], vocHistory = []] = data;
         if (temperatureHistory[0]?.entity_id) {
           temperatureEntityId = temperatureHistory[0].entity_id;
           config.temperature_entity = temperatureEntityId;
@@ -416,6 +448,10 @@
           no2EntityId = no2History[0].entity_id;
           config.no2_entity = no2EntityId;
         }
+        if (pm1History[0]?.entity_id) {
+          pm1EntityId = pm1History[0].entity_id;
+          config.pm1_entity = pm1EntityId;
+        }
         if (pm25History[0]?.entity_id) {
           pm25EntityId = pm25History[0].entity_id;
           config.pm25_entity = pm25EntityId;
@@ -423,6 +459,10 @@
         if (pm10History[0]?.entity_id) {
           pm10EntityId = pm10History[0].entity_id;
           config.pm10_entity = pm10EntityId;
+        }
+        if (radonHistory[0]?.entity_id) {
+          radonEntityId = radonHistory[0].entity_id;
+          config.radon_entity = radonEntityId;
         }
         if (vocHistory[0]?.entity_id) {
           vocEntityId = vocHistory[0].entity_id;

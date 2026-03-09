@@ -31,8 +31,10 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
   @state() private humidityHistory: ChartDataPoint[] = [];
   @state() private co2History: ChartDataPoint[] = [];
   @state() private no2History: ChartDataPoint[] = [];
+  @state() private pm1History: ChartDataPoint[] = [];
   @state() private pm25History: ChartDataPoint[] = [];
   @state() private pm10History: ChartDataPoint[] = [];
+  @state() private radonHistory: ChartDataPoint[] = [];
   @state() private vocHistory: ChartDataPoint[] = [];
   @state() private historyExpanded = false;
 
@@ -50,8 +52,10 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       humidity_entity: "sensor.humidity",
       co2_entity: "",
       no2_entity: "",
+      pm1_entity: "",
       pm25_entity: "",
       pm10_entity: "",
+      radon_entity: "",
       voc_entity: "",
       temperature_unit: "C",
       temp_c_min: 20,
@@ -126,8 +130,10 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       changedProperties.has("humidityHistory") ||
       changedProperties.has("co2History") ||
       changedProperties.has("no2History") ||
+      changedProperties.has("pm1History") ||
       changedProperties.has("pm25History") ||
       changedProperties.has("pm10History") ||
+      changedProperties.has("radonHistory") ||
       changedProperties.has("vocHistory") ||
       changedProperties.has("config");
 
@@ -176,11 +182,17 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       if (this.config.no2_entity) {
         entityIds.push(this.config.no2_entity);
       }
+      if (this.config.pm1_entity) {
+        entityIds.push(this.config.pm1_entity);
+      }
       if (this.config.pm25_entity) {
         entityIds.push(this.config.pm25_entity);
       }
       if (this.config.pm10_entity) {
         entityIds.push(this.config.pm10_entity);
+      }
+      if (this.config.radon_entity) {
+        entityIds.push(this.config.radon_entity);
       }
       if (this.config.voc_entity) {
         entityIds.push(this.config.voc_entity);
@@ -215,10 +227,14 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
           this.co2History = points;
         } else if (firstRecord.entity_id === this.config.no2_entity) {
           this.no2History = points;
+        } else if (firstRecord.entity_id === this.config.pm1_entity) {
+          this.pm1History = points;
         } else if (firstRecord.entity_id === this.config.pm25_entity) {
           this.pm25History = points;
         } else if (firstRecord.entity_id === this.config.pm10_entity) {
           this.pm10History = points;
+        } else if (firstRecord.entity_id === this.config.radon_entity) {
+          this.radonHistory = points;
         } else if (firstRecord.entity_id === this.config.voc_entity) {
           this.vocHistory = points;
         }
@@ -449,6 +465,17 @@ private getSensorDefs() {
         ),
       },
       {
+        id: "pm1", canvasId: "pm1-chart",
+        label: tr.sensors.pm1, color: "#e599f7",
+        unit: entityUnit("pm1_entity", "µg/m³"), history: this.pm1History,
+        show: !!config.pm1_entity,
+        thresholds: collect(
+          thresh(AQ_THRESHOLDS.pm1.good, "rgba(100,220,100,0.5)", tr.thresholds.good),
+          thresh(AQ_THRESHOLDS.pm1.warning, "rgba(255,180,50,0.5)", tr.thresholds.warning),
+          thresh(AQ_THRESHOLDS.pm1.poor, "rgba(255,80,80,0.5)", tr.thresholds.poor),
+        ),
+      },
+      {
         id: "pm25", canvasId: "pm25-chart",
         label: tr.sensors.pm25, color: "#da77f2",
         unit: entityUnit("pm25_entity", "µg/m³"), history: this.pm25History,
@@ -468,6 +495,17 @@ private getSensorDefs() {
           thresh(AQ_THRESHOLDS.pm10.good, "rgba(100,220,100,0.5)", tr.thresholds.good),
           thresh(AQ_THRESHOLDS.pm10.warning, "rgba(255,180,50,0.5)", tr.thresholds.warning),
           thresh(AQ_THRESHOLDS.pm10.poor, "rgba(255,80,80,0.5)", tr.thresholds.poor),
+        ),
+      },
+      {
+        id: "radon", canvasId: "radon-chart",
+        label: tr.sensors.radon, color: "#63e6be",
+        unit: entityUnit("radon_entity", "Bq/m³"), history: this.radonHistory,
+        show: !!config.radon_entity,
+        thresholds: collect(
+          thresh(AQ_THRESHOLDS.radon.good, "rgba(100,220,100,0.5)", tr.thresholds.good),
+          thresh(AQ_THRESHOLDS.radon.warning, "rgba(255,180,50,0.5)", tr.thresholds.warning),
+          thresh(AQ_THRESHOLDS.radon.poor, "rgba(255,80,80,0.5)", tr.thresholds.poor),
         ),
       },
       {
@@ -713,11 +751,13 @@ private getSensorDefs() {
     if (!this.config || !this.hass) return null;
 
     const sensors: { entity: string | undefined; thresholds: { good: number; warning: number } }[] = [
-      { entity: this.config.co2_entity,  thresholds: AQ_THRESHOLDS.co2  },
-      { entity: this.config.no2_entity,  thresholds: AQ_THRESHOLDS.no2  },
-      { entity: this.config.pm25_entity, thresholds: AQ_THRESHOLDS.pm25 },
-      { entity: this.config.pm10_entity, thresholds: AQ_THRESHOLDS.pm10 },
-      { entity: this.config.voc_entity,  thresholds: AQ_THRESHOLDS.voc  },
+      { entity: this.config.co2_entity,   thresholds: AQ_THRESHOLDS.co2   },
+      { entity: this.config.no2_entity,   thresholds: AQ_THRESHOLDS.no2   },
+      { entity: this.config.pm1_entity,   thresholds: AQ_THRESHOLDS.pm1   },
+      { entity: this.config.pm25_entity,  thresholds: AQ_THRESHOLDS.pm25  },
+      { entity: this.config.pm10_entity,  thresholds: AQ_THRESHOLDS.pm10  },
+      { entity: this.config.radon_entity, thresholds: AQ_THRESHOLDS.radon },
+      { entity: this.config.voc_entity,   thresholds: AQ_THRESHOLDS.voc   },
     ];
 
     const readings: SensorReading[] = [];
