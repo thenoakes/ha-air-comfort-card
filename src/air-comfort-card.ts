@@ -418,8 +418,9 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
     const {
       angle,
       radialDistance,
-      isInComfortZone,
-      statusText
+      statusText,
+      tempDeviation,
+      humidityDeviation
     } = calculateComfortZone(temperatureInCelsius, humidity, {
       tempMin: tempMinInCelsius,
       tempMax: tempMaxInCelsius,
@@ -459,7 +460,8 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
     const indicatorX = actualRadius * Math.cos(indicatorAngle);
     const indicatorY = actualRadius * Math.sin(indicatorAngle);
 
-    const showWarning = !isInComfortZone;
+    const showTempWarning = tempDeviation > 0;
+    const showHumidityWarning = humidityDeviation > 0;
     const aqStatus = this.calculateAirQuality();
     const { label: statusLabel, severity } = dominantStatus(statusText, aqStatus, t);
 
@@ -496,7 +498,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
           <div class="reading">
             <div class="reading-label">${t.readings.temperature}</div>
             <div class="reading-value">
-              ${showWarning
+              ${showTempWarning
                 ? html`
                     <span class="warning-icon">⚠</span>
                   `
@@ -510,6 +512,11 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
           <div class="reading">
             <div class="reading-label">${t.readings.humidity}</div>
             <div class="reading-value">
+              ${showHumidityWarning
+                ? html`
+                    <span class="warning-icon">⚠</span>
+                  `
+                : ""}
               ${humidity.toFixed(0)}<span class="reading-unit"
                 >${humidityUnit}</span
               >
