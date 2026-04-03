@@ -231,7 +231,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
     return [
       {
         id: "temperature",
-        label: tr.sensors.temperature, color: "#ff6b6b",
+        icon: "mdi:thermometer", label: tr.sensors.temperature, color: "#ff6b6b",
         unit: displayTempUnit, history: tempHistory,
         show: true,
         thresholds: collect(
@@ -241,7 +241,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       },
       {
         id: "humidity",
-        label: tr.sensors.humidity, color: "#4dabf7",
+        icon: "mdi:water-percent", label: tr.sensors.humidity, color: "#4dabf7",
         unit: entityUnit("humidity_entity", "%"), history: this.humidityHistory,
         show: true,
         thresholds: collect(
@@ -251,7 +251,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       },
       {
         id: "co2",
-        label: tr.sensors.co2, color: "#a9e34b",
+        icon: "mdi:molecule-co2", label: tr.sensors.co2, color: "#a9e34b",
         unit: entityUnit("co2_entity", "ppm"), history: this.co2History,
         show: !!config.co2_entity,
         thresholds: collect(
@@ -262,7 +262,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       },
       {
         id: "no2",
-        label: tr.sensors.no2, color: "#ffa94d",
+        icon: "mdi:smog", label: tr.sensors.no2, color: "#ffa94d",
         unit: entityUnit("no2_entity", ""), history: this.no2History,
         show: !!config.no2_entity,
         thresholds: collect(
@@ -273,7 +273,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       },
       {
         id: "pm1",
-        label: tr.sensors.pm1, color: "#e599f7",
+        icon: "mdi:blur-linear", label: tr.sensors.pm1, color: "#e599f7",
         unit: entityUnit("pm1_entity", "µg/m³"), history: this.pm1History,
         show: !!config.pm1_entity,
         thresholds: collect(
@@ -284,7 +284,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       },
       {
         id: "pm25",
-        label: tr.sensors.pm25, color: "#da77f2",
+        icon: "mdi:blur", label: tr.sensors.pm25, color: "#da77f2",
         unit: entityUnit("pm25_entity", "µg/m³"), history: this.pm25History,
         show: !!config.pm25_entity,
         thresholds: collect(
@@ -295,7 +295,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       },
       {
         id: "pm10",
-        label: tr.sensors.pm10, color: "#74c0fc",
+        icon: "mdi:blur-radial", label: tr.sensors.pm10, color: "#74c0fc",
         unit: entityUnit("pm10_entity", "µg/m³"), history: this.pm10History,
         show: !!config.pm10_entity,
         thresholds: collect(
@@ -306,7 +306,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       },
       {
         id: "radon",
-        label: tr.sensors.radon, color: "#63e6be",
+        icon: "mdi:radioactive", label: tr.sensors.radon, color: "#63e6be",
         unit: entityUnit("radon_entity", "Bq/m³"), history: this.radonHistory,
         show: !!config.radon_entity,
         thresholds: collect(
@@ -317,7 +317,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       },
       {
         id: "voc",
-        label: tr.sensors.voc, color: "#20c997",
+        icon: "mdi:cloud-outline", label: tr.sensors.voc, color: "#20c997",
         unit: entityUnit("voc_entity", ""), history: this.vocHistory,
         show: !!config.voc_entity,
         thresholds: collect(
@@ -614,7 +614,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
               <div class="charts-container">
                 ${visibleDefs.map(def => html`
                   <div class="chart-wrapper">
-                    <div class="chart-label">${def.label} ${t.history.chartSuffix}</div>
+                    <div class="chart-label"><ha-icon .icon=${def.icon} style="--mdc-icon-size: 18px; vertical-align: middle; margin-right: 4px;"></ha-icon>${def.label}</div>
                     <svg-line-chart
                       .data=${def.history}
                       .color=${def.color}
