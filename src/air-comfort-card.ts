@@ -231,7 +231,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
     return [
       {
         id: "temperature",
-        icon: "mdi:thermometer", label: tr.sensors.temperature, color: "#ff6b6b",
+        icon: "mdi:thermometer", label: tr.sensors.temperature, color: "#FFD700",
         unit: displayTempUnit, history: tempHistory,
         value: this.hass?.states[config.temperature_entity]?.state,
         show: true,
@@ -242,7 +242,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       },
       {
         id: "humidity",
-        icon: "mdi:water-percent", label: tr.sensors.humidity, color: "#4dabf7",
+        icon: "mdi:water-percent", label: tr.sensors.humidity, color: "#40E0D0",
         unit: entityUnit("humidity_entity", "%"), history: this.humidityHistory,
         value: this.hass?.states[config.humidity_entity]?.state,
         show: true,
@@ -253,7 +253,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       },
       {
         id: "co2",
-        icon: "mdi:molecule-co2", label: tr.sensors.co2, color: "#a9e34b",
+        icon: "mdi:molecule-co2", label: tr.sensors.co2, color: "#8B4513",
         unit: entityUnit("co2_entity", "ppm"), history: this.co2History,
         value: config.co2_entity ? this.hass?.states[config.co2_entity]?.state : undefined,
         show: !!config.co2_entity,
@@ -277,7 +277,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       },
       {
         id: "pm1",
-        icon: "mdi:blur-linear", label: tr.sensors.pm1, color: "#e599f7",
+        icon: "mdi:blur-linear", label: tr.sensors.pm1, color: "#9B59B6",
         unit: entityUnit("pm1_entity", "µg/m³"), history: this.pm1History,
         value: config.pm1_entity ? this.hass?.states[config.pm1_entity]?.state : undefined,
         show: !!config.pm1_entity,
@@ -289,7 +289,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       },
       {
         id: "pm25",
-        icon: "mdi:blur", label: tr.sensors.pm25, color: "#da77f2",
+        icon: "mdi:blur", label: tr.sensors.pm25, color: "#7B2FBE",
         unit: entityUnit("pm25_entity", "µg/m³"), history: this.pm25History,
         value: config.pm25_entity ? this.hass?.states[config.pm25_entity]?.state : undefined,
         show: !!config.pm25_entity,
@@ -313,7 +313,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       },
       {
         id: "radon",
-        icon: "mdi:radioactive", label: tr.sensors.radon, color: "#63e6be",
+        icon: "mdi:radioactive", label: tr.sensors.radon, color: "#FF10F0",
         unit: entityUnit("radon_entity", "Bq/m³"), history: this.radonHistory,
         value: config.radon_entity ? this.hass?.states[config.radon_entity]?.state : undefined,
         show: !!config.radon_entity,
@@ -325,7 +325,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       },
       {
         id: "voc",
-        icon: "mdi:cloud-outline", label: tr.sensors.voc, color: "#20c997",
+        icon: "mdi:cloud-outline", label: tr.sensors.voc, color: "#FF8C00",
         value: config.voc_entity ? this.hass?.states[config.voc_entity]?.state : undefined,
         unit: entityUnit("voc_entity", ""), history: this.vocHistory,
         show: !!config.voc_entity,
