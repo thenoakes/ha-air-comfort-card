@@ -352,7 +352,7 @@ export const cardStyles = css`
   }
 
   .chart-value {
-    font-size: 1.2em;
+    font-size: 2.4em;
     font-weight: 600;
     color: var(--primary-text-color, #fff);
     text-transform: none;

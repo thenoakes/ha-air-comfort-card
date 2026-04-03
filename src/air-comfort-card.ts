@@ -510,36 +510,6 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
         </div>
         ` : ""}
 
-        <div class="readings">
-          <div class="reading">
-            <div class="reading-label">${t.readings.temperature}</div>
-            <div class="reading-value">
-              ${showTempWarning
-                ? html`
-                    <span class="warning-icon">⚠</span>
-                  `
-                : ""}
-              ${displayTemperature.toFixed(1)}<span class="reading-unit"
-                >${displayUnit}</span
-              >
-            </div>
-          </div>
-
-          <div class="reading">
-            <div class="reading-label">${t.readings.humidity}</div>
-            <div class="reading-value">
-              ${showHumidityWarning
-                ? html`
-                    <span class="warning-icon">⚠</span>
-                  `
-                : ""}
-              ${humidity.toFixed(0)}<span class="reading-unit"
-                >${humidityUnit}</span
-              >
-            </div>
-          </div>
-        </div>
-
     ${this.renderCharts()}
   </div>
 `;
@@ -586,55 +556,19 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
     const visibleDefs = this.getSensorDefs().filter(d => d.show);
     if (visibleDefs.length === 0) return null;
 
-    const t = getTranslations(this.hass?.language);
-
     return html`
-      <div class="history-section">
-        <div
-          class="history-toggle"
-          role="button"
-          tabindex="0"
-          aria-expanded="${this.historyExpanded}"
-          @click=${this.toggleHistory}
-          @keydown=${this.handleHistoryToggleKeyDown}
-        >
-          <span>
-            ${this.historyExpanded ? t.history.hide : t.history.show}
-          </span>
-          <svg
-            class="history-toggle-icon"
-            viewBox="0 0 24 24"
-            width="20"
-            height="20"
-            aria-hidden="true"
-          >
-            <path
-              d="M6 9l6 6 6-6"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></path>
-          </svg>
-        </div>
-        ${this.historyExpanded
-          ? html`
-              <div class="charts-container">
-                ${visibleDefs.map(def => html`
-                  <div class="chart-wrapper">
-                    <div class="chart-label"><ha-icon .icon=${def.icon} style="--mdc-icon-size: 18px; vertical-align: middle; margin-right: 4px;"></ha-icon>${def.label}${def.value ? html`<span class="chart-value">${def.value} ${def.unit}</span>` : ""}</div>
-                    <svg-line-chart
-                      .data=${def.history}
-                      .color=${def.color}
-                      .unit=${def.unit}
-                      .thresholds=${def.thresholds}
-                    ></svg-line-chart>
-                  </div>
-                `)}
-              </div>
-            `
-          : ""}
+      <div class="charts-container">
+        ${visibleDefs.map(def => html`
+          <div class="chart-wrapper">
+            <div class="chart-label"><ha-icon .icon=${def.icon} style="--mdc-icon-size: 18px; vertical-align: middle; margin-right: 4px;"></ha-icon>${def.label}${def.value ? html`<span class="chart-value">${def.value} ${def.unit}</span>` : ""}</div>
+            <svg-line-chart
+              .data=${def.history}
+              .color=${def.color}
+              .unit=${def.unit}
+              .thresholds=${def.thresholds}
+            ></svg-line-chart>
+          </div>
+        `)}
       </div>
     `;
   }

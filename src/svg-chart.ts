@@ -257,7 +257,7 @@ export class SvgLineChart extends LitElement {
               text-anchor="end" dominant-baseline="middle"
               font-size="10"
               fill="var(--secondary-text-color, rgba(255,255,255,0.6))"
-            >${Math.round(v)}${this.unit}</text>
+            >${Math.round(v)}</text>
           `;
         })}
 
