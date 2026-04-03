@@ -233,6 +233,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
         id: "temperature",
         icon: "mdi:thermometer", label: tr.sensors.temperature, color: "#ff6b6b",
         unit: displayTempUnit, history: tempHistory,
+        value: this.hass?.states[config.temperature_entity]?.state,
         show: true,
         thresholds: collect(
           thresh(tempMin, "rgba(100,150,255,0.5)", tr.thresholds.cold),
@@ -243,6 +244,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
         id: "humidity",
         icon: "mdi:water-percent", label: tr.sensors.humidity, color: "#4dabf7",
         unit: entityUnit("humidity_entity", "%"), history: this.humidityHistory,
+        value: this.hass?.states[config.humidity_entity]?.state,
         show: true,
         thresholds: collect(
           thresh(config.humidity_min, "rgba(255,180,50,0.5)", tr.thresholds.dry),
@@ -253,6 +255,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
         id: "co2",
         icon: "mdi:molecule-co2", label: tr.sensors.co2, color: "#a9e34b",
         unit: entityUnit("co2_entity", "ppm"), history: this.co2History,
+        value: config.co2_entity ? this.hass?.states[config.co2_entity]?.state : undefined,
         show: !!config.co2_entity,
         thresholds: collect(
           thresh(AQ_THRESHOLDS.co2.good, "rgba(100,220,100,0.5)", tr.thresholds.good),
@@ -264,6 +267,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
         id: "no2",
         icon: "mdi:smog", label: tr.sensors.no2, color: "#ffa94d",
         unit: entityUnit("no2_entity", ""), history: this.no2History,
+        value: config.no2_entity ? this.hass?.states[config.no2_entity]?.state : undefined,
         show: !!config.no2_entity,
         thresholds: collect(
           thresh(AQ_THRESHOLDS.no2.good, "rgba(100,220,100,0.5)", tr.thresholds.good),
@@ -275,6 +279,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
         id: "pm1",
         icon: "mdi:blur-linear", label: tr.sensors.pm1, color: "#e599f7",
         unit: entityUnit("pm1_entity", "µg/m³"), history: this.pm1History,
+        value: config.pm1_entity ? this.hass?.states[config.pm1_entity]?.state : undefined,
         show: !!config.pm1_entity,
         thresholds: collect(
           thresh(AQ_THRESHOLDS.pm1.good, "rgba(100,220,100,0.5)", tr.thresholds.good),
@@ -286,6 +291,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
         id: "pm25",
         icon: "mdi:blur", label: tr.sensors.pm25, color: "#da77f2",
         unit: entityUnit("pm25_entity", "µg/m³"), history: this.pm25History,
+        value: config.pm25_entity ? this.hass?.states[config.pm25_entity]?.state : undefined,
         show: !!config.pm25_entity,
         thresholds: collect(
           thresh(AQ_THRESHOLDS.pm25.good, "rgba(100,220,100,0.5)", tr.thresholds.good),
@@ -297,6 +303,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
         id: "pm10",
         icon: "mdi:blur-radial", label: tr.sensors.pm10, color: "#74c0fc",
         unit: entityUnit("pm10_entity", "µg/m³"), history: this.pm10History,
+        value: config.pm10_entity ? this.hass?.states[config.pm10_entity]?.state : undefined,
         show: !!config.pm10_entity,
         thresholds: collect(
           thresh(AQ_THRESHOLDS.pm10.good, "rgba(100,220,100,0.5)", tr.thresholds.good),
@@ -308,6 +315,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
         id: "radon",
         icon: "mdi:radioactive", label: tr.sensors.radon, color: "#63e6be",
         unit: entityUnit("radon_entity", "Bq/m³"), history: this.radonHistory,
+        value: config.radon_entity ? this.hass?.states[config.radon_entity]?.state : undefined,
         show: !!config.radon_entity,
         thresholds: collect(
           thresh(AQ_THRESHOLDS.radon.good, "rgba(100,220,100,0.5)", tr.thresholds.good),
@@ -318,6 +326,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       {
         id: "voc",
         icon: "mdi:cloud-outline", label: tr.sensors.voc, color: "#20c997",
+        value: config.voc_entity ? this.hass?.states[config.voc_entity]?.state : undefined,
         unit: entityUnit("voc_entity", ""), history: this.vocHistory,
         show: !!config.voc_entity,
         thresholds: collect(
@@ -614,7 +623,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
               <div class="charts-container">
                 ${visibleDefs.map(def => html`
                   <div class="chart-wrapper">
-                    <div class="chart-label"><ha-icon .icon=${def.icon} style="--mdc-icon-size: 18px; vertical-align: middle; margin-right: 4px;"></ha-icon>${def.label}</div>
+                    <div class="chart-label"><ha-icon .icon=${def.icon} style="--mdc-icon-size: 18px; vertical-align: middle; margin-right: 4px;"></ha-icon>${def.label}${def.value ? html`<span class="chart-value">${def.value} ${def.unit}</span>` : ""}</div>
                     <svg-line-chart
                       .data=${def.history}
                       .color=${def.color}

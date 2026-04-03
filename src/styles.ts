@@ -346,6 +346,17 @@ export const cardStyles = css`
     margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .chart-value {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: var(--primary-text-color, #fff);
+    text-transform: none;
+    letter-spacing: normal;
   }
 
   svg-line-chart {
