@@ -51,6 +51,8 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       temp_f_max: 75,
       humidity_min: 40,
       humidity_max: 60,
+      show_dial: true,
+      history_expanded: false,
     };
   }
 
@@ -73,8 +75,11 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
       temp_f_max: 75,
       humidity_min: 40,
       humidity_max: 60,
+      show_dial: true,
+      history_expanded: false,
       ...stripDeprecatedKeys(config)
     };
+    this.historyExpanded = this.config.history_expanded ?? false;
   }
 
   public getCardSize(): number {
@@ -475,6 +480,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
           </div>
         </div>
 
+        ${this.config.show_dial !== false ? html`
         <div
           class="comfort-dial-container"
           style="--dial-size: ${this.dialSize}px;"
@@ -493,6 +499,7 @@ export class AirComfortCard extends LitElement implements LovelaceCard {
             <div class="dial-label label-left">${t.dial.dry}</div>
           </div>
         </div>
+        ` : ""}
 
         <div class="readings">
           <div class="reading">

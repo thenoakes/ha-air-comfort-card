@@ -42,6 +42,8 @@ export interface CardConfig {
   pm10_entity?: string;
   radon_entity?: string;
   voc_entity?: string;
+  show_dial?: boolean;
+  history_expanded?: boolean;
 }
 
 export interface EntityState {
